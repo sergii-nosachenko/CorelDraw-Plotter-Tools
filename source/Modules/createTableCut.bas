@@ -10,8 +10,8 @@ Sub CreateTableCut()
     Else
         Set s = ActiveDocument.Selection
         If s Is Nothing Or s.Shapes.Count = 0 Then
-            Set refPointBL = ActiveDocument.ActivePage.FindShape(name:="refPointBL")
-            Set refPointTR = ActiveDocument.ActivePage.FindShape(name:="refPointTR")
+            Set refPointBL = ActiveDocument.ActivePage.FindShape(Name:="refPointBL")
+            Set refPointTR = ActiveDocument.ActivePage.FindShape(Name:="refPointTR")
             Set l = ActiveDocument.ActivePage.Layers.Find("Cut")
             If refPointBL Is Nothing Or refPointTR Is Nothing Or l Is Nothing Then
                 MsgBox "No Object Selected And No Reference Points"
@@ -47,7 +47,7 @@ Public Sub DoJob()
     Dim sel As Shape, table As Shape
     Set sel = ActiveDocument.Selection
     '5%
-    ActiveDocument.ActiveShape.name = "FRAME"
+    ActiveDocument.ActiveShape.Name = "FRAME"
     width = sel.SizeWidth + 0.2
     Height = sel.SizeHeight + 0.2
     ExpectedWidth = CellWidth * Cols
@@ -55,36 +55,36 @@ Public Sub DoJob()
     PosX = sel.PositionX - 0.2
     PosY = sel.PositionY + 0.2
     pctCompl = 5 / 100
-    Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+    ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
     'Starting
     '25%
     Set table = ActiveLayer.CreateCustomShape("Table", 1, 10, 5, 7, Cols, Rows)
     pctCompl = pctCompl + 25 / 100
-    Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+    ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
     '20%
     table.SetSize width, Height
     pctCompl = pctCompl + 20 / 100
-    Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+    ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
     '20%
     table.SetPosition PosX, PosY
     pctCompl = pctCompl + 20 / 100
-    Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+    ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
     '20%
     table.ConvertToCurves
     pctCompl = pctCompl + 20 / 100
-    Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+    ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
     '5%
     table.SetSizeEx table.CenterX, table.CenterY, ExpectedWidth + 0.2, ExpectedHeight + 0.2
     pctCompl = pctCompl + 5 / 100
-    Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+    ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
     '5%
     ActiveDocument.Selection.Group
-    ActiveDocument.ActiveShape.name = "CUT"
-    ActiveLayer.FindShapes(name:="FRAME").CreateSelection
+    ActiveDocument.ActiveShape.Name = "CUT"
+    ActiveLayer.FindShapes(Name:="FRAME").CreateSelection
     ActiveDocument.Selection.Delete
-    ActiveLayer.FindShapes(name:="CUT").CreateSelection
+    ActiveLayer.FindShapes(Name:="CUT").CreateSelection
     pctCompl = pctCompl + 5 / 100
-    Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+    ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
     Unload ProgressWindow
     
     correctTable.Start
@@ -102,12 +102,4 @@ Public Sub DoJob()
     ActiveSelection.Ungroup
     Unload CreateTable
     
-End Sub
-
-Private Sub Progress(pctCompl As Single, width As Single)
-
-    ProgressWindow.Text.Caption = Round(pctCompl, 0) & "% complete"
-    ProgressWindow.Bar.width = width
-    DoEvents
-
 End Sub

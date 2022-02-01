@@ -45,7 +45,7 @@ Public Sub DoJob()
           .Ungroup
       End With
       pctCompl = 5 / 100
-      Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+      ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
       
       '15%
       Set lines = ActiveSelection.Shapes
@@ -57,7 +57,7 @@ Public Sub DoJob()
           End If
       Next l
       pctCompl = 20 / 100
-      Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+      ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
       
       '40%
       Set vertLines = lines.FindShapes(Query:="@outline.color = cmyk(100,0,100,0)")
@@ -70,7 +70,7 @@ Public Sub DoJob()
           End If
           done = done + 1
           pctCompl = (20 + (40 / total * done)) / 100
-          Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+          ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
       Next k
     
       '40%
@@ -90,7 +90,7 @@ Public Sub DoJob()
           End If
           done = done + 1
           pctCompl = (60 + (40 / total * done)) / 100
-          Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+          ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
       Next k
 
     ActiveLayer.Shapes.All.CreateSelection
@@ -99,12 +99,4 @@ Public Sub DoJob()
     ActiveWindow.Refresh
     ActiveSelection.Ungroup
     Unload ProgressWindow
-End Sub
-
-Private Sub Progress(pctCompl As Single, width As Single)
-
-    ProgressWindow.Text.Caption = Round(pctCompl, 0) & "% complete"
-    ProgressWindow.Bar.width = width
-    DoEvents
-
 End Sub
