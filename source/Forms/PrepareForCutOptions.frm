@@ -23,9 +23,9 @@ Private Sub Start_Click()
     If Fillet.ListIndex = 2 Then FilletValue = 0.75
     If Fillet.ListIndex = 3 Then FilletValue = 1
     If AdvancedOtimizationCheck.Value = True Then
-        Otimization = True
+        OtimizeAdvanced = True
     Else
-        Otimization = False
+        OtimizeAdvanced = False
     End If
     PassesCount = Passes.ListIndex + 1
     Start.Enabled = False

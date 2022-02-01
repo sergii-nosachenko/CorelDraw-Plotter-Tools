@@ -23,7 +23,7 @@ Public Sub DoJob()
     Dim pctCompl As Single, total As Single, done As Single
     Set sel = ActiveDocument.Selection
     total = multiplyOptions.copiesTop.Text * multiplyOptions.copiesLeft.Text
-    ActiveDocument.ActiveShape.name = "CUT"
+    ActiveDocument.ActiveShape.Name = "CUT"
     sel.OrderToFront
     done = 1
     'Starting
@@ -48,9 +48,9 @@ Public Sub DoJob()
             End If
         Next
         pctCompl = done / total
-        Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+        ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
     Next
-    ActiveLayer.FindShapes(name:="CUT").CreateSelection
+    ActiveLayer.FindShapes(Name:="CUT").CreateSelection
     ActiveSelection.Group
     Optimization = False
     ActiveWindow.Refresh
@@ -58,12 +58,4 @@ Public Sub DoJob()
     ActiveDocument.ClearSelection
     Unload ProgressWindow
     Unload multiplyOptions
-End Sub
-
-Private Sub Progress(pctCompl As Single, width As Single)
-
-    ProgressWindow.Text.Caption = Round(pctCompl, 0) & "% complete"
-    ProgressWindow.Bar.width = width
-    DoEvents
-
 End Sub
