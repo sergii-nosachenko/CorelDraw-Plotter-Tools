@@ -26,10 +26,14 @@ Sub Start()
 End Sub
 
 Public Sub DoJob()
+    ' Create Undo action for whole sequence (for performance)
+    ActiveDocument.BeginCommandGroup "Correct Table For Cut"
+    
+    MACRO_STATUS = 1
     ActiveDocument.Unit = cdrMillimeter
     Optimization = True
     Dim k
-    Dim pctCompl As Single, total As Single, done As Single
+    Dim pctCompl As Single, TOTAL As Single, DONE As Single
     Dim EvenCount As Boolean
     Dim sel As Shape
     Dim lines As Shapes
@@ -61,23 +65,23 @@ Public Sub DoJob()
       
       '40%
       Set vertLines = lines.FindShapes(Query:="@outline.color = cmyk(100,0,100,0)")
-      total = vertLines.Count
-      done = 0
+      TOTAL = vertLines.Count
+      DONE = 0
       For k = 1 To vertLines.Count
           vertLines.Range(k).OrderToFront
           If IsOdd(k) Then
               vertLines.Range(k).Flip cdrFlipVertical
           End If
-          done = done + 1
-          pctCompl = (20 + (40 / total * done)) / 100
+          DONE = DONE + 1
+          pctCompl = (20 + (40 / TOTAL * DONE)) / 100
           ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
       Next k
     
       '40%
       Set horLines = lines.FindShapes(Query:="@outline.color = cmyk(0,100,100,0)")
       EvenCount = IsEven(horLines.Count)
-      total = horLines.Count
-      done = 0
+      TOTAL = horLines.Count
+      DONE = 0
       For k = 1 To horLines.Count
           If EvenCount Then
               If IsEven(k) Then
@@ -88,8 +92,8 @@ Public Sub DoJob()
                   horLines.Range(k).Flip cdrFlipHorizontal
               End If
           End If
-          done = done + 1
-          pctCompl = (60 + (40 / total * done)) / 100
+          DONE = DONE + 1
+          pctCompl = (60 + (40 / TOTAL * DONE)) / 100
           ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
       Next k
 
@@ -99,4 +103,6 @@ Public Sub DoJob()
     ActiveWindow.Refresh
     ActiveSelection.Ungroup
     Unload ProgressWindow
+    MACRO_STATUS = 0
+    ActiveDocument.EndCommandGroup
 End Sub

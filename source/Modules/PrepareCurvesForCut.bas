@@ -17,9 +17,10 @@ Sub Start()
 End Sub
 Public Sub DoJob()
     'Starting
-    
     ' Error handling
     On Error GoTo EndErrorJob
+    ' Create Undo action for whole sequence (for performance)
+    ActiveDocument.BeginCommandGroup "Prepare Curves For Cut"
     MACRO_STATUS = 1
     ' Set default units to mm
     ActiveDocument.Unit = cdrMillimeter
@@ -61,7 +62,7 @@ Public Sub DoJob()
     Dim k As Integer
     For k = 1 To totalShapes
     
-        WaitUntilStatusIsRun
+        ProgressWindow.CheckStatus
         ' Call processing procedure
         ProcessShape AllShapes(k), k, totalShapes
     Next k
@@ -84,6 +85,7 @@ EndJob:
     ActiveWindow.Refresh
     Application.Refresh
     MACRO_STATUS = 0
+    ActiveDocument.EndCommandGroup
 End Sub
 
 Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As Integer)
@@ -105,10 +107,15 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
     ' Close curve if endings are touching
     curShape.Curve.JoinTouchingSubpaths False, 0.2
     
+    ' Save original width and height for final correction
+    Dim origWidth, origHeight As Double
+    origWidth = curShape.SizeWidth
+    origHeight = curShape.SizeHeight
+    
     If OPTIMIZE_ADVANCED Then
        
         'Progress message update
-        ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl, MESSAGE & " | Reshaping..."
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE & " | Reshaping..."
         
         Dim newShape As Shape
         Dim outside As Effect
@@ -152,7 +159,7 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
     i = 0
     Do Until i = PASSES_COUNT
     
-        WaitUntilStatusIsRun
+        ProgressWindow.CheckStatus
     
         If OPTIMIZE_ADVANCED Then
             ' Call the procedure to simplify and cleanup nodes
@@ -176,6 +183,9 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
         If FilletValueLocal < 0.25 Then FilletValueLocal = 0
         If SmoothnessLevelLocal < 1 Then SmoothnessLevelLocal = 0
         
+        ' Reducing nodes for better performance and preventing bugs
+        reduceNodes_cheating curShape.Curve.Nodes.All
+        
         'Progress update
         DONE = DONE + 1
         PCT_COMPL = DONE / TOTAL
@@ -184,6 +194,11 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
         i = i + 1
     Loop
     
+    ' Restore original size
+    ActiveDocument.ReferencePoint = cdrCenter
+    curShape.SizeWidth = origWidth
+    curShape.SizeHeight = origHeight
+    curShape.Name = "CUT"
     ' Set name for completed shape
     curShape.Name = "CUT"
     ' Recolor otline of completed shape
@@ -213,7 +228,7 @@ Private Sub SimplifyCloseupNodes(AllNodes As NodeRange, FilletValueLocal As Doub
     Do
         On Error Resume Next
         
-        WaitUntilStatusIsRun
+        ProgressWindow.CheckStatus
         
         'Progress message update
         ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE & " | Optimizing segment #" & curSegment.index & "..."
@@ -240,7 +255,7 @@ Private Sub SimplifyCloseupNodes(AllNodes As NodeRange, FilletValueLocal As Doub
     Do
         On Error Resume Next
         
-        WaitUntilStatusIsRun
+        ProgressWindow.CheckStatus
         
         'Progress message update
         ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE & " | Cleaning segment #" & curSegment.index & "..."
@@ -302,15 +317,4 @@ Sub reduceNodes_cheating(SelNodes As NodeRange)
     Application.FrameWork.Automation.InvokeItem "b714bc06-7325-4d33-b330-4f4efec22c91"
     ' Wait until Reduce Nodes command completed
     DoEvents
-End Sub
-
-Sub WaitUntilStatusIsRun()
-    ' Wait until user accepts macro termination
-    Do Until MACRO_STATUS = 1
-        If MACRO_STATUS = 3 Then
-            MACRO_STATUS = 0
-            End
-        End If
-        DoEvents
-    Loop
 End Sub

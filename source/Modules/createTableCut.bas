@@ -38,10 +38,13 @@ Sub Start(Cols_ As String, Rows_ As String, CellWidth_ As Single, CellHeight_ As
 End Sub
 
 Public Sub DoJob()
-
+    ' Create Undo action for whole sequence (for performance)
+    ActiveDocument.BeginCommandGroup "Create Table For Cut"
+    
+    MACRO_STATUS = 1
     ActiveDocument.Unit = cdrMillimeter
     Optimization = True
-    Dim pctCompl As Single, total As Single, done As Single
+    Dim pctCompl As Single, TOTAL As Single, DONE As Single
     Dim width As Single, Height As Single, ExpectedWidth As Double, ExpectedHeight As Double
     Dim PosX As Double, PosY As Double
     Dim sel As Shape, table As Shape
@@ -85,6 +88,7 @@ Public Sub DoJob()
     ActiveLayer.FindShapes(Name:="CUT").CreateSelection
     pctCompl = pctCompl + 5 / 100
     ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl
+    
     Unload ProgressWindow
     
     correctTable.Start
@@ -101,5 +105,6 @@ Public Sub DoJob()
     ActiveWindow.Refresh
     ActiveSelection.Ungroup
     Unload CreateTable
-    
+    MACRO_STATUS = 0
+    ActiveDocument.EndCommandGroup
 End Sub
