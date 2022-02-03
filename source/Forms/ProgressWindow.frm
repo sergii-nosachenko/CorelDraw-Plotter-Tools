@@ -16,12 +16,22 @@ Attribute VB_Exposed = False
 Private Sub UserForm_Activate()
     If Me.Tag <> "" Then Application.GMSManager.RunMacro "Overprint", Me.Tag
 End Sub
-
-
+Private Sub UserForm_QueryClose(Cancel As Integer, CloseMode As Integer)
+    'Prevent user from closing with the Close box in the title bar.
+    Dim result As VbMsgBoxResult
+    MACRO_STATUS = 2
+    result = MsgBox("Точно хочеш перервати процес?", vbOKCancel, "Зупинити оптимізацію")
+    If result = vbOK Then
+        MACRO_STATUS = 3
+        Application.Optimization = False
+        Cancel = False
+    Else
+        MACRO_STATUS = 1
+        Cancel = True
+    End If
+End Sub
 Sub Progress(pctCompl As Single, width As Single, Optional msg As String = "")
-
     ProgressWindow.Text.Caption = Round(pctCompl, 0) & "% complete " & msg
     ProgressWindow.Bar.width = width
     DoEvents
-
 End Sub

@@ -14,22 +14,23 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Private Sub Start_Click()
-    If Smoothness.ListIndex = 0 Then SmoothnessLevel = 0
-    If Smoothness.ListIndex = 2 Then SmoothnessLevel = 1
-    If Smoothness.ListIndex = 3 Then SmoothnessLevel = 4
-    If Smoothness.ListIndex = 4 Then SmoothnessLevel = 7
-    If Fillet.ListIndex = 0 Then FilletValue = 0
-    If Fillet.ListIndex = 1 Then FilletValue = 0.5
-    If Fillet.ListIndex = 2 Then FilletValue = 0.75
-    If Fillet.ListIndex = 3 Then FilletValue = 1
+    If Smoothness.ListIndex = 0 Then SMOOTHNESS_LEVEL = 0
+    If Smoothness.ListIndex = 2 Then SMOOTHNESS_LEVEL = 1
+    If Smoothness.ListIndex = 3 Then SMOOTHNESS_LEVEL = 4
+    If Smoothness.ListIndex = 4 Then SMOOTHNESS_LEVEL = 7
+    If Fillet.ListIndex = 0 Then FILLET_VALUE = 0
+    If Fillet.ListIndex = 1 Then FILLET_VALUE = 0.5
+    If Fillet.ListIndex = 2 Then FILLET_VALUE = 0.75
+    If Fillet.ListIndex = 3 Then FILLET_VALUE = 1
     If AdvancedOtimizationCheck.Value = True Then
-        OtimizeAdvanced = True
+        OPTIMIZE_ADVANCED = True
     Else
-        OtimizeAdvanced = False
+        OPTIMIZE_ADVANCED = False
     End If
-    PassesCount = Passes.ListIndex + 1
+    PASSES_COUNT = Passes.ListIndex + 1
     Start.Enabled = False
     Start.Caption = "Processing..."
+    Unload PrepareForCutOptions
     ProgressWindow.Caption = "Processing curves"
     ProgressWindow.Tag = "PrepareCurvesForCut.DoJob"
     ProgressWindow.Show

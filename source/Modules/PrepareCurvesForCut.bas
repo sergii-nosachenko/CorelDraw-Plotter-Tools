@@ -1,9 +1,5 @@
 Attribute VB_Name = "PrepareCurvesForCut"
-'Globals
-Public SmoothnessLevel As Integer, PassesCount As Integer
-Public FilletValue As Double
-Public OtimizeAdvanced As Boolean
-Public pctCompl As Single, total As Single, done As Single, message As String
+Dim PCT_COMPL As Single, TOTAL As Single, DONE As Single, MESSAGE As String
 Sub Start()
     Dim sel As Shape
     If ActiveDocument Is Nothing Then
@@ -24,7 +20,7 @@ Public Sub DoJob()
     
     ' Error handling
     On Error GoTo EndErrorJob
-    
+    MACRO_STATUS = 1
     ' Set default units to mm
     ActiveDocument.Unit = cdrMillimeter
     
@@ -49,21 +45,23 @@ Public Sub DoJob()
     Set AllShapes = TempLayer.Shapes
     
     ' Set total value for progress bar
-    If OtimizeAdvanced Then
-        total = AllShapes.Count * (PassesCount * 3 + 1)
+    If OPTIMIZE_ADVANCED Then
+        TOTAL = AllShapes.Count * (PASSES_COUNT * 3 + 1)
     Else
-        total = AllShapes.Count * PassesCount
+        TOTAL = AllShapes.Count * PASSES_COUNT
     End If
     
     ' Set done value for progress bar
-    done = 0
-    pctCompl = 0
+    DONE = 0
+    PCT_COMPL = 0
     
     ' Looping through all shapes
     Dim totalShapes As Integer
     totalShapes = AllShapes.Count
     Dim k As Integer
     For k = 1 To totalShapes
+    
+        WaitUntilStatusIsRun
         ' Call processing procedure
         ProcessShape AllShapes(k), k, totalShapes
     Next k
@@ -85,6 +83,7 @@ EndJob:
     Application.Optimization = False
     ActiveWindow.Refresh
     Application.Refresh
+    MACRO_STATUS = 0
 End Sub
 
 Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As Integer)
@@ -95,21 +94,21 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
     Dim SmoothnessLevelLocal As Integer
     
     ' Basic message for current shape progress message
-    message = "(shape #" & curIndex & " of " & totalShapes & ")"
+    MESSAGE = "(shape #" & curIndex & " of " & totalShapes & ")"
     
     ' Define local copies of global variables from form
-    FilletValueLocal = FilletValue
-    SmoothnessLevelLocal = SmoothnessLevel
+    FilletValueLocal = FILLET_VALUE
+    SmoothnessLevelLocal = SMOOTHNESS_LEVEL
     
     ' Converting shape to curve
     curShape.ConvertToCurves
     ' Close curve if endings are touching
     curShape.Curve.JoinTouchingSubpaths False, 0.2
     
-    If OtimizeAdvanced Then
+    If OPTIMIZE_ADVANCED Then
        
         'Progress message update
-        ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl, message & " | Reshaping..."
+        ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl, MESSAGE & " | Reshaping..."
         
         Dim newShape As Shape
         Dim outside As Effect
@@ -139,9 +138,9 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
         End If
         
         'Progress update
-        done = done + 1
-        pctCompl = done / total
-        ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl, message
+        DONE = DONE + 1
+        PCT_COMPL = DONE / TOTAL
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE
         
     End If
     
@@ -151,15 +150,17 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
     
     ' Loop in passes defined by user in form
     i = 0
-    Do Until i = PassesCount
+    Do Until i = PASSES_COUNT
     
-        If OtimizeAdvanced Then
+        WaitUntilStatusIsRun
+    
+        If OPTIMIZE_ADVANCED Then
             ' Call the procedure to simplify and cleanup nodes
             SimplifyCloseupNodes curShape.Curve.Nodes.All, FilletValueLocal
         End If
         
         'Progress message update
-        ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl, message & " | Smoothing..."
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE & " | Smoothing..."
         
         Set AllNodes = curShape.Curve.Nodes.All
         ' Smoothing curve
@@ -176,9 +177,9 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
         If SmoothnessLevelLocal < 1 Then SmoothnessLevelLocal = 0
         
         'Progress update
-        done = done + 1
-        pctCompl = done / total
-        ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl, message
+        DONE = DONE + 1
+        PCT_COMPL = DONE / TOTAL
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE
         
         i = i + 1
     Loop
@@ -196,13 +197,13 @@ Private Sub SimplifyCloseupNodes(AllNodes As NodeRange, FilletValueLocal As Doub
     On Error GoTo EndError
     
     Dim doneLocal As Single
-    doneLocal = done
+    doneLocal = DONE
     
     Dim Angle As Double
-    
     Dim AllSegments As SegmentRange
-    Dim prevSegment As Segment, curSegment As Segment, nextSegment As Segment
-    Dim startNode As Node, endNode As Node
+    Dim prevSegment, curSegment, nextSegment As Segment
+    Dim startNode, endNode As Node
+    
     Set AllSegments = AllNodes.SegmentRange
     Set curSegment = AllSegments.FirstSegment
     
@@ -212,8 +213,10 @@ Private Sub SimplifyCloseupNodes(AllNodes As NodeRange, FilletValueLocal As Doub
     Do
         On Error Resume Next
         
+        WaitUntilStatusIsRun
+        
         'Progress message update
-        ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl, message & " | Optimizing segment #" & curSegment.index & "..."
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE & " | Optimizing segment #" & curSegment.index & "..."
         
         ' If segment length <= FilletValueLocal add center points to neighbor segments
         If curSegment.Length <= FilletValueLocal Then
@@ -226,9 +229,9 @@ Private Sub SimplifyCloseupNodes(AllNodes As NodeRange, FilletValueLocal As Doub
     Loop Until curSegment.index = AllSegments.FirstSegment.index
 
     'Progress update
-    done = done + 1
-    pctCompl = done / total
-    ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl, message
+    DONE = DONE + 1
+    PCT_COMPL = DONE / TOTAL
+    ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE
 
     Set AllNodes = ActiveDocument.Selection.Shapes.First.Curve.Nodes.All
     Set AllSegments = AllNodes.SegmentRange
@@ -237,8 +240,10 @@ Private Sub SimplifyCloseupNodes(AllNodes As NodeRange, FilletValueLocal As Doub
     Do
         On Error Resume Next
         
+        WaitUntilStatusIsRun
+        
         'Progress message update
-        ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl, message & " | Cleaning segment #" & curSegment.index & "..."
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE & " | Cleaning segment #" & curSegment.index & "..."
         
         ' Clear unnecessary nodes on short segments (but only if angle > 90)
         ' Angle is important - node can hold sharp angle and removing one can cause curve reshaping
@@ -277,14 +282,14 @@ Private Sub SimplifyCloseupNodes(AllNodes As NodeRange, FilletValueLocal As Doub
     Loop Until curSegment.index = AllSegments.FirstSegment.index
     
     'Progress update
-    done = done + 1
-    pctCompl = done / total
-    ProgressWindow.Progress pctCompl * 100, ProgressWindow.Frame.width * pctCompl, message
+    DONE = DONE + 1
+    PCT_COMPL = DONE / TOTAL
+    ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE
     
     GoTo EndSimplify
     
 EndError:
-    done = doneLocal + 2
+    DONE = doneLocal + 2
 EndSimplify:
 End Sub
 
@@ -297,4 +302,15 @@ Sub reduceNodes_cheating(SelNodes As NodeRange)
     Application.FrameWork.Automation.InvokeItem "b714bc06-7325-4d33-b330-4f4efec22c91"
     ' Wait until Reduce Nodes command completed
     DoEvents
+End Sub
+
+Sub WaitUntilStatusIsRun()
+    ' Wait until user accepts macro termination
+    Do Until MACRO_STATUS = 1
+        If MACRO_STATUS = 3 Then
+            MACRO_STATUS = 0
+            End
+        End If
+        DoEvents
+    Loop
 End Sub
