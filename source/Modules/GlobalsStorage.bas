@@ -9,3 +9,5 @@ Global MACRO_STATUS As Integer
 Global SMOOTHNESS_LEVEL, PASSES_COUNT As Integer
 Global FILLET_VALUE As Double
 Global OPTIMIZE_ADVANCED As Boolean
+
+Global FRAME_SIZE As New FrameCoords

@@ -1,17 +1,23 @@
 Attribute VB_Name = "PrepareCurvesForCut"
 Dim PCT_COMPL As Single, TOTAL As Single, DONE As Single, MESSAGE As String
 Sub Start()
-    Dim sel As Shape
+    Dim s As Shape
     If ActiveDocument Is Nothing Then
-        MsgBox "No Active Document opened"
-        Exit Sub
+        answer = MsgBox("No Active Document opened, create new?", vbOKCancel, "Warning")
+        If answer = 1 Then
+            ' Open New document dialog by clicking the New button on panel
+            ' There's no legal method for calling this function from the code
+            Application.FrameWork.Automation.InvokeItem "fa65d0c1-879b-4ef5-9465-af09e00e91ab"
+        End If
     Else
-        Set sel = ActiveDocument.Selection
-        If sel.Shapes.Count = 0 Then
-            MsgBox "No Object Selected"
+    
+        ActiveDocument.Unit = cdrMillimeter
+        Set s = ActiveDocument.Selection
+        If s.Shapes.Count = 0 Then
+            MsgBox "No Object(s) selected. Nothing to otimize.", vbCritical, "Warning"
             Exit Sub
         Else
-            PrepareForCutOptions.Show
+            PrepareCurvesForCut_Options.Show
         End If
     End If
 End Sub
@@ -68,21 +74,26 @@ Public Sub DoJob()
     Next k
     
     ' Moving completed shapes to original layer
-    Set AllShapes = TempLayer.FindShapes("CUT").Shapes
-    AllShapes.All.CreateSelection
-    AllShapes.All.MoveToLayer OriginalLayer
+    Dim items As ShapeRange
+    Set items = TempLayer.FindShapes("CUT")
+    items.MoveToLayer OriginalLayer
     TempLayer.Delete
+    
+    Set items = OriginalLayer.FindShapes("CUT")
+    Set OrigSelection = items.group
+    
     GoTo EndJob
     
 EndErrorJob:
     ' Message on error
-    MsgBox "Error occured on shape #" & k
+    MsgBox "Error occured on shape #" & k, vbCritical, "Critical error"
 EndJob:
     ' Unload forms and refresh window
     Unload ProgressWindow
     'Unload PrepareForCutOptions
     Application.Optimization = False
     ActiveWindow.Refresh
+    OrigSelection.Ungroup
     Application.Refresh
     MACRO_STATUS = 0
     ActiveDocument.EndCommandGroup
@@ -115,7 +126,7 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
     If OPTIMIZE_ADVANCED Then
        
         'Progress message update
-        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE & " | Reshaping..."
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.FRAME.width * PCT_COMPL, MESSAGE & " | Reshaping..."
         
         Dim newShape As Shape
         Dim outside As Effect
@@ -147,7 +158,7 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
         'Progress update
         DONE = DONE + 1
         PCT_COMPL = DONE / TOTAL
-        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.FRAME.width * PCT_COMPL, MESSAGE
         
     End If
     
@@ -167,7 +178,7 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
         End If
         
         'Progress message update
-        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE & " | Smoothing..."
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.FRAME.width * PCT_COMPL, MESSAGE & " | Smoothing..."
         
         Set AllNodes = curShape.Curve.Nodes.All
         ' Smoothing curve
@@ -189,7 +200,7 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
         'Progress update
         DONE = DONE + 1
         PCT_COMPL = DONE / TOTAL
-        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.FRAME.width * PCT_COMPL, MESSAGE
         
         i = i + 1
     Loop
@@ -198,10 +209,10 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
     ActiveDocument.ReferencePoint = cdrCenter
     curShape.SizeWidth = origWidth
     curShape.SizeHeight = origHeight
-    curShape.Name = "CUT"
     ' Set name for completed shape
     curShape.Name = "CUT"
     ' Recolor otline of completed shape
+    curShape.Outline.width = 0.2
     curShape.Outline.Color.CMYKAssign 0, 100, 0, 0
     
 End Sub
@@ -231,7 +242,7 @@ Private Sub SimplifyCloseupNodes(AllNodes As NodeRange, FilletValueLocal As Doub
         ProgressWindow.CheckStatus
         
         'Progress message update
-        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE & " | Optimizing segment #" & curSegment.index & "..."
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.FRAME.width * PCT_COMPL, MESSAGE & " | Optimizing segment #" & curSegment.index & "..."
         
         ' If segment length <= FilletValueLocal add center points to neighbor segments
         If curSegment.Length <= FilletValueLocal Then
@@ -246,7 +257,7 @@ Private Sub SimplifyCloseupNodes(AllNodes As NodeRange, FilletValueLocal As Doub
     'Progress update
     DONE = DONE + 1
     PCT_COMPL = DONE / TOTAL
-    ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE
+    ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.FRAME.width * PCT_COMPL, MESSAGE
 
     Set AllNodes = ActiveDocument.Selection.Shapes.First.Curve.Nodes.All
     Set AllSegments = AllNodes.SegmentRange
@@ -258,7 +269,7 @@ Private Sub SimplifyCloseupNodes(AllNodes As NodeRange, FilletValueLocal As Doub
         ProgressWindow.CheckStatus
         
         'Progress message update
-        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE & " | Cleaning segment #" & curSegment.index & "..."
+        ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.FRAME.width * PCT_COMPL, MESSAGE & " | Cleaning segment #" & curSegment.index & "..."
         
         ' Clear unnecessary nodes on short segments (but only if angle > 90)
         ' Angle is important - node can hold sharp angle and removing one can cause curve reshaping
@@ -299,7 +310,7 @@ Private Sub SimplifyCloseupNodes(AllNodes As NodeRange, FilletValueLocal As Doub
     'Progress update
     DONE = DONE + 1
     PCT_COMPL = DONE / TOTAL
-    ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.Frame.width * PCT_COMPL, MESSAGE
+    ProgressWindow.Progress PCT_COMPL * 100, ProgressWindow.FRAME.width * PCT_COMPL, MESSAGE
     
     GoTo EndSimplify
     
@@ -317,4 +328,10 @@ Sub reduceNodes_cheating(SelNodes As NodeRange)
     Application.FrameWork.Automation.InvokeItem "b714bc06-7325-4d33-b330-4f4efec22c91"
     ' Wait until Reduce Nodes command completed
     DoEvents
+End Sub
+
+Public Sub ResetAfterError()
+    Optimization = False
+    ActiveWindow.Refresh
+    ActiveSelection.Ungroup
 End Sub

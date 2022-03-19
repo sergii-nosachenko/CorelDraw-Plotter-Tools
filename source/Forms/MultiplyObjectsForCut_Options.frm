@@ -1,19 +1,18 @@
 VERSION 5.00
-Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} multiplyOptions 
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} MultiplyObjectsForCut_Options 
    Caption         =   "Multiply selected contour"
-   ClientHeight    =   5295
+   ClientHeight    =   5292
    ClientLeft      =   120
-   ClientTop       =   465
-   ClientWidth     =   3750
-   OleObjectBlob   =   "multiplyOptions.frx":0000
+   ClientTop       =   468
+   ClientWidth     =   3756
+   OleObjectBlob   =   "MultiplyObjectsForCut_Options.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
-Attribute VB_Name = "multiplyOptions"
+Attribute VB_Name = "MultiplyObjectsForCut_Options"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
-
 Public copiesL, copiesT As String
 Public distanceL, distanceT As String
 Public frameWidth, frameHeight As Double
@@ -140,9 +139,9 @@ Private Sub adjustDistanceTopButton_Change()
 End Sub
 Private Sub ParamsCheck()
     If distanceLeft.Text > 0 And distanceTop.Text > 0 Then
-        Info.Caption = "Кількість фігур = " & (copiesTop.Text * copiesLeft.Text) & vbNewLine & _
-        "Розміри = " & copiesLeft.Text * distanceLeft.Text - (distanceLeft.Text - Round(ActiveShape.SizeWidth, 1)) & "x" & _
-        copiesTop.Text * distanceTop.Text - (distanceTop.Text - Round(ActiveShape.SizeHeight, 1)) & " мм"
+        Info.Caption = "Total count = " & (copiesTop.Text * copiesLeft.Text) & vbNewLine & _
+        "Art bounds size = " & copiesLeft.Text * distanceLeft.Text - (distanceLeft.Text - Round(ActiveShape.SizeWidth, 1)) & "x" & _
+        copiesTop.Text * distanceTop.Text - (distanceTop.Text - Round(ActiveShape.SizeHeight, 1)) & " mm"
     Else
         Info.Caption = ""
     End If
@@ -151,23 +150,20 @@ End Sub
 Private Sub MultiplyButton_Click()
     MultiplyButton.Enabled = False
     MultiplyButton.Caption = "Processing..."
-    ProgressWindow.Tag = "multiplyContour.DoJob"
+    ProgressWindow.Tag = "MultiplyObjectsForCut.DoJob"
     ProgressWindow.Caption = "Processing shapes"
     ProgressWindow.Show
 End Sub
 
 Private Sub UserForm_Initialize()
-    Dim refPointBL As Shape, refPointTR As Shape
     With copiesLeft
         .SelStart = 0
         .SelLength = Len(.Text)
     End With
     ActiveDocument.Unit = cdrMillimeter
-    Set refPointBL = ActiveDocument.ActivePage.FindShape(name:="refPointBL")
-    Set refPointTR = ActiveDocument.ActivePage.FindShape(name:="refPointTR")
-    If Not refPointBL Is Nothing And Not refPointTR Is Nothing Then
-        frameWidth = refPointTR.CenterX - refPointBL.CenterX
-        frameHeight = refPointTR.CenterY - refPointBL.CenterY
+    If Not FRAME_SIZE Is Nothing Then
+        frameWidth = FRAME_SIZE.RightX - FRAME_SIZE.LeftX
+        frameHeight = FRAME_SIZE.TopY - FRAME_SIZE.BottomY
     End If
     distanceL = 0
     distanceT = 0
