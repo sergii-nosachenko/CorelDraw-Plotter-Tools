@@ -50,8 +50,18 @@ Plugin creates new table with parameters. It will be automatically optimized for
 **Usage:**
 
 - select shape for reference as frame *(Note: will be removed after execution)* / or define frame guide and reference points by `ReDefine frame and reference points` plugin or skip this and plugin will use your documents bounds as ones;
-- click `Correct table for cut` icon on `Plotter tools` toolbar.
+- click `Create table for cut` icon on `Plotter tools` toolbar.
 
 **Settings:**
 
-*In progress...*
+![Settings window](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/CreateTableForCut-1.png?raw=true)
+
+- **Cell width**: cell width in mm
+- **Cell height**: cell height in mm
+- **Columns**: expected columns count (calculates automatically to fit frame, can be adjusted to smaller value >= 1)
+- **Rows**: expected rows count (calculates automatically to fit frame, can be adjusted to smaller value >= 1)
+- **Overcut**: lines offset value in mm (0 - 10)
+
+If cell doesn't fit into frame you will not be able to proceed. Check you frame size and adjust settings.
+
+**Result:**
