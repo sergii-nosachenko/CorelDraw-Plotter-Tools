@@ -26,6 +26,10 @@ Main features are:
 
 ## Plugins list:
 
+- [Correct table for cut](#correct-table-for-cut)
+- [Create table for cut](#create-table-for-cut)
+- [Multiply objects for cut](#multiply-objects-for-cut)
+
 ### Correct table for cut
 
 ![Correct table for cut](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/icons/icons-01.png?raw=true)
@@ -56,14 +60,42 @@ Plugin creates new table with parameters. It will be automatically optimized for
 
 ![Settings window](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/CreateTableForCut-01.png?raw=true)
 
-- **Cell width**: cell width in mm
-- **Cell height**: cell height in mm
-- **Columns**: expected columns count (calculates automatically to fit frame, can be adjusted to smaller value >= 1)
-- **Rows**: expected rows count (calculates automatically to fit frame, can be adjusted to smaller value >= 1)
-- **Overcut**: lines offset value in mm (0 - 10)
+- **Cell width**: cell width in mm.
+- **Cell height**: cell height in mm.
+- **Columns**: expected columns count (calculates automatically to fit frame, can be adjusted to smaller value >= 1).
+- **Rows**: expected rows count (calculates automatically to fit frame, can be adjusted to smaller value >= 1).
+- **Overcut**: lines offset value in mm (0 - 10).
 
 If cell doesn't fit into frame you will not be able to proceed. Check you frame size and adjust settings.
 
 **Result:**
 
 ![Result table](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/CreateTableForCut-02.png?raw=true)
+
+### Multiply objects for cut
+
+![Multiply objects for cut](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/icons/icons-03.png?raw=true)
+
+Plugin dublicates selected shape(s) with parameters. It fills frame in zigzag style starting fron bottom right corner.
+
+**Usage:**
+
+- define frame guide and reference points by `ReDefine frame and reference points` plugin or skip this and plugin will use your documents bounds as ones;
+- select shape(s) to dublicate;
+- click `Multiply objects for cut` icon on `Plotter tools` toolbar.
+
+**Settings:**
+
+![Settings window](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/MultiplyObjectsForCut-01.png?raw=true)
+
+- **Horizontal offset**: positive number of offset on x-axis in mm. Recommended to set in to: `cut contour width` + `gap between contours`.
+- **Vertical offset**: positive number of offset on y-axis in mm. Recommended to set in to: `cut contour height` + `gap between contours`.
+- **Columns**: expected columns count (calculates automatically to fit frame, can be adjusted to both smaller and bigger values).
+- **Rows**: expected rows count (calculates automatically to fit frame, can be adjusted to both smaller and bigger values).
+
+Result bounds can be larger than frame, keep it in mind.
+
+**Result:**
+
+![Result table](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/CreateTableForCut-02.png?raw=true)
+
