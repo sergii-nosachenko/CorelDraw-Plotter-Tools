@@ -65,3 +65,5 @@ Plugin creates new table with parameters. It will be automatically optimized for
 If cell doesn't fit into frame you will not be able to proceed. Check you frame size and adjust settings.
 
 **Result:**
+
+![Result table](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/CreateTableForCut-02.png?raw=true)
