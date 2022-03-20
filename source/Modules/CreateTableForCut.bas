@@ -117,17 +117,7 @@ Public Sub DoJob()
     Unload CreateTableForCut_Options
     ActiveDocument.EndCommandGroup
     
-    Dim cutLength As Double
-    
-    cutLength = Round((Cols * CellWidth + Overcut) * (Rows + 1) + (Rows * CellHeight + Overcut) * (Cols + 1))
-    
-    answer = MsgBox("Operation successfull. Total cells = " & (Cols * Rows) & ". Contour length = " & cutLength & "mm. Copy length to clipboard?", vbOKCancel, "Completed")
-    
-    If answer = 1 Then
-        Dim obj As New MSForms.DataObject
-        obj.SetText cutLength
-        obj.PutInClipboard
-    End If
+    CalculateCurvesLength.DoJob "Total cells = " & (Cols * Rows) & ". "
     
     MACRO_STATUS = 0
     

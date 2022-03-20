@@ -35,7 +35,7 @@ Public Sub DoJob()
     Application.Optimization = True
     
     ' Creating of temp layer (or reusing existing)
-    Dim TempLayer As Layer, OriginalLayer As Layer
+    Dim TempLayer As Layer, originalLayer As Layer
     Set TempLayer = ActiveDocument.ActivePage.AllLayers.Find("Temporary!!!")
     If TempLayer Is Nothing Then
         Set TempLayer = ActiveDocument.ActivePage.CreateLayer("Temporary!!!")
@@ -44,7 +44,7 @@ Public Sub DoJob()
     ' Moving shapes to temp layer
     Dim OrigSelection As Shape
     Set OrigSelection = ActiveDocument.Selection
-    Set OriginalLayer = OrigSelection.Shapes.First.Layer
+    Set originalLayer = OrigSelection.Shapes.First.Layer
     OrigSelection.UngroupAll
     OrigSelection.MoveToLayer TempLayer
     
@@ -76,10 +76,10 @@ Public Sub DoJob()
     ' Moving completed shapes to original layer
     Dim items As ShapeRange
     Set items = TempLayer.FindShapes("CUT")
-    items.MoveToLayer OriginalLayer
+    items.MoveToLayer originalLayer
     TempLayer.Delete
     
-    Set items = OriginalLayer.FindShapes("CUT")
+    Set items = originalLayer.FindShapes("CUT")
     Set OrigSelection = items.group
     
     GoTo EndJob
@@ -94,7 +94,7 @@ EndJob:
     Application.Optimization = False
     ActiveWindow.Refresh
     OrigSelection.Ungroup
-    Application.Refresh
+    ActiveWindow.Refresh
     MACRO_STATUS = 0
     ActiveDocument.EndCommandGroup
 End Sub
@@ -189,7 +189,7 @@ Private Sub ProcessShape(curShape As Shape, curIndex As Integer, totalShapes As 
         If FilletValueLocal > 0 Then AllNodes.Fillet FilletValueLocal, True
         
         ' Adjust smoothness and fillet values for next step
-        FilletValueLocal = FilletValueLocal - 0.25
+        'FilletValueLocal = FilletValueLocal - 0.25
         SmoothnessLevelLocal = SmoothnessLevelLocal - 3
         If FilletValueLocal < 0.25 Then FilletValueLocal = 0
         If SmoothnessLevelLocal < 1 Then SmoothnessLevelLocal = 0

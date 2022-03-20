@@ -50,14 +50,14 @@ Sub DoJob(Optional Overcut)
       '+10%
 
       ' Creating of temp layer (or reusing existing)
-      Dim TempLayer As Layer, OriginalLayer As Layer
+      Dim TempLayer As Layer, originalLayer As Layer
       Set TempLayer = ActiveDocument.ActivePage.AllLayers.Find("Temporary!!!")
       If TempLayer Is Nothing Then
          Set TempLayer = ActiveDocument.ActivePage.CreateLayer("Temporary!!!")
       End If
       
       ' Moving shapes to temp layer
-      Set OriginalLayer = sel.Shapes.First.Layer
+      Set originalLayer = sel.Shapes.First.Layer
       sel.ConvertToCurves
       sel.MoveToLayer TempLayer
       TempLayer.Shapes.All.UngroupAll
@@ -121,7 +121,7 @@ Sub DoJob(Optional Overcut)
     TempLayer.Shapes.All.SetOutlineProperties 0.2, , CreateCMYKColor(0, 100, 0, 0)
     TempLayer.Shapes.All.group
     TempLayer.Shapes.All.Ungroup
-    TempLayer.Shapes.All.MoveToLayer OriginalLayer
+    TempLayer.Shapes.All.MoveToLayer originalLayer
     TempLayer.Delete
 
     ActiveWindow.Refresh

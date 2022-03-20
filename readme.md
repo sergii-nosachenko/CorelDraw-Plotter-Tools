@@ -31,6 +31,7 @@ Main features are:
 - [Multiply objects for cut](#multiply-objects-for-cut)
 - [Prepare curves for cut](#prepare-curves-for-cut)
 - [ReDefine frame and reference points](#redefine-frame-and-reference-points)
+- [Calculate curves length](#calculate-curves-length)
 
 ***
 
@@ -172,5 +173,20 @@ Original shape will be removed after completed. Previous frame and reference poi
 
 - create rectangular shape inside available cutting area;
 - click `ReDefine frame and reference points` icon on `Plotter tools` toolbar.
+
+There no settings for this plugin.
+
+***
+
+## Calculate curves length
+
+![Calculate curves length](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/icons/icons-05.png?raw=true)
+
+Simple plugin that takes your selected shape(s) and calculate total curves length. If object can't be converted to a curve it will throw an error.
+
+**Usage:**
+
+- select all shapes you want to measure (avoid images and complex shapes);
+- click `Calculate curves length` icon on `Plotter tools` toolbar.
 
 There no settings for this plugin.
