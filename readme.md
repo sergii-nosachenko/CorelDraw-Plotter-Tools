@@ -29,6 +29,7 @@ Main features are:
 - [Correct table for cut](#correct-table-for-cut)
 - [Create table for cut](#create-table-for-cut)
 - [Multiply objects for cut](#multiply-objects-for-cut)
+- [Prepare curves for cut](#prepare-curves-for-cut)
 
 ### Correct table for cut
 
@@ -98,4 +99,47 @@ Result bounds can be larger than frame, keep it in mind.
 **Result:**
 
 ![Result table](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/MultiplyObjectsForCut-02.png?raw=true)
+
+### Prepare curves for cut
+
+![Prepare curves for cut](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/icons/icons-04.png?raw=true)
+
+Plugin optimize selected shape(s) with parameters. It process all selected shapes one by one, adding smoothness, reducing nodes and rounding corners.
+
+**Usage:**
+
+- select shape(s) to optimize;
+- click `Prepare curves for cut` icon on `Plotter tools` toolbar.
+
+**Settings:**
+
+![Settings window](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/PrepareCurvesForCut-01.png?raw=true)
+
+- **Curve smoothness level**: can be one of:
+    - *None* - no smoothing at all
+    - *Low* - minimum level (by default)
+    - *Medium* - average level
+    - *High* - maximum level
+
+    These parameters have been tuned experimentally based on practice.
+
+- **Maximum corners radius**: can be one of:
+    - *None* - no corners fillet radius at all
+    - *0,5 mm* (by default)
+    - *0,75 mm*
+    - *1 mm*
+
+    These parameters have been chosen based on practice.
+
+- **Number of iterations**: can be one of:
+    - *1* (by default)
+    - *2*
+    - *3*
+
+- **Advanced optimization**: if switched ON (by default) works with every segment of curve. Can achive better results but takes longer. Also can cause artifacts in some cases, so it recommended to inspect all curves after processing.
+Also this parameter will automatically close all curves.
+
+**Result:**
+
+![Result table](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/PrepareCurvesForCut-02.png?raw=true)
 
