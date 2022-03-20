@@ -30,8 +30,11 @@ Main features are:
 - [Create table for cut](#create-table-for-cut)
 - [Multiply objects for cut](#multiply-objects-for-cut)
 - [Prepare curves for cut](#prepare-curves-for-cut)
+- [ReDefine frame and reference points](#redefine-frame-and-reference-points)
 
-### Correct table for cut
+***
+
+## Correct table for cut
 
 ![Correct table for cut](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/icons/icons-01.png?raw=true)
 
@@ -40,13 +43,15 @@ Simple plugin that takes your selected `Table object` or similar set of horizont
 **Usage:**
 
 - create table by `Table tool` with desired parameters / or create set of horizontal and vertical lines forming a table / or call [Create table for cut](#create-table-for-cut) and it will create and correct table automatically;
-- define frame guide and reference points by `ReDefine frame and reference points` plugin or skip this and plugin will use your documents bounds as ones;
+- define frame guide and reference points by [ReDefine frame and reference points](#redefine-frame-and-reference-points) plugin or skip this and plugin will use your documents bounds as ones;
 - select your table;
 - click `Correct table for cut` icon on `Plotter tools` toolbar.
 
 There no settings for this plugin.
 
-### Create table for cut
+***
+
+## Create table for cut
 
 ![Create table for cut](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/icons/icons-02.png?raw=true)
 
@@ -54,7 +59,7 @@ Plugin creates new table with parameters. It will be automatically optimized for
 
 **Usage:**
 
-- select shape for reference as frame *(Note: will be removed after execution)* / or define frame guide and reference points by `ReDefine frame and reference points` plugin or skip this and plugin will use your documents bounds as ones;
+- select shape for reference as frame *(Note: will be removed after execution)* / or define frame guide and reference points by [ReDefine frame and reference points](#redefine-frame-and-reference-points) plugin or skip this and plugin will use your documents bounds as ones;
 - click `Create table for cut` icon on `Plotter tools` toolbar.
 
 **Settings:**
@@ -69,11 +74,15 @@ Plugin creates new table with parameters. It will be automatically optimized for
 
 If cell doesn't fit into frame you will not be able to proceed. Check you frame size and adjust settings.
 
+After operation complete you will get the message with calculated total cut length that can be copied.
+
 **Result:**
 
 ![Result table](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/CreateTableForCut-02.png?raw=true)
 
-### Multiply objects for cut
+***
+
+## Multiply objects for cut
 
 ![Multiply objects for cut](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/icons/icons-03.png?raw=true)
 
@@ -81,7 +90,7 @@ Plugin dublicates selected shape(s) with parameters. It fills frame in zigzag st
 
 **Usage:**
 
-- define frame guide and reference points by `ReDefine frame and reference points` plugin or skip this and plugin will use your documents bounds as ones;
+- define frame guide and reference points by [ReDefine frame and reference points](#redefine-frame-and-reference-points) plugin or skip this and plugin will use your documents bounds as ones;
 - select shape(s) to dublicate;
 - click `Multiply objects for cut` icon on `Plotter tools` toolbar.
 
@@ -100,7 +109,9 @@ Result bounds can be larger than frame, keep it in mind.
 
 ![Result table](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/MultiplyObjectsForCut-02.png?raw=true)
 
-### Prepare curves for cut
+***
+
+## Prepare curves for cut
 
 ![Prepare curves for cut](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/icons/icons-04.png?raw=true)
 
@@ -139,7 +150,27 @@ Plugin optimize selected shape(s) with parameters. It process all selected shape
 - **Advanced optimization**: if switched ON (by default) works with every segment of curve. Can achive better results but takes longer. Also can cause artifacts in some cases, so it recommended to inspect all curves after processing.
 Also this parameter will automatically close all curves.
 
+Feel free to experiment with parameters to achive best results.
+
 **Result:**
+
+You can see the difference between original (magenta) and optimized (green) curves.
 
 ![Result table](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/PrepareCurvesForCut-02.png?raw=true)
 
+***
+
+## ReDefine frame and reference points
+
+![ReDefine frame and reference points](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/icons/icons-06.png?raw=true)
+
+Simple plugin that takes your selected shape and creates frame guide with reference points. Useful when you have template file with cutting marks for your cutter device. Just create rectangular shape inside available cutting area and plugin adds necessary guides.
+
+Original shape will be removed after completed. Previous frame and reference points will be replaced.
+
+**Usage:**
+
+- create rectangular shape inside available cutting area;
+- click `ReDefine frame and reference points` icon on `Plotter tools` toolbar.
+
+There no settings for this plugin.
