@@ -97,5 +97,5 @@ Result bounds can be larger than frame, keep it in mind.
 
 **Result:**
 
-![Result table](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/CreateTableForCut-02.png?raw=true)
+![Result table](https://github.com/sergii-nosachenko/CorelDraw-Plotter-Tools/blob/master/images/MultiplyObjectsForCut-02.png?raw=true)
 
