@@ -1,3 +1,5 @@
+![Project cover](images/cover.jpg?raw=true)
+
 # CoreDraw tools for preparing files for plotter cutting
 This tiny plugins package will be useful for those, who prepare files for kiss-cut and die-cut postpress operations.
 Stickers, shaped cards, boxes etc. But in first place - it's about sheet printing.
