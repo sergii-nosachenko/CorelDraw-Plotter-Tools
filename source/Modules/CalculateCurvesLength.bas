@@ -25,8 +25,10 @@ Sub DoJob(Optional Msg As String)
 
     Optimization = True
     
-    Dim AllShapes As Shapes
-    Set AllShapes = ActiveDocument.Selection.Shapes
+    Dim AllShapes As ShapeRange
+    Set AllShapes = ActiveDocument.Selection.DuplicateAsRange
+    Set AllShapes = AllShapes.UngroupAllEx
+    AllShapes.ConvertToCurves
     
     Dim cutLength As Single
     cutLength = 0
@@ -38,6 +40,8 @@ Sub DoJob(Optional Msg As String)
         ' Call processing procedure
         cutLength = cutLength + MeasureShape(AllShapes(k))
     Next k
+    
+    AllShapes.All.Delete
     
     Optimization = False
     ActiveWindow.Refresh
@@ -55,6 +59,7 @@ Sub DoJob(Optional Msg As String)
     
 ErrorHandler:
     ' Message on error
+    AllShapes.All.Delete
     MsgBox "Error occured on shape #" & k, vbCritical, "Critical error"
     ResetAfterError
     
@@ -63,20 +68,18 @@ End Sub
 Private Function MeasureShape(currentShape As Shape) As Single
 On Error GoTo ErrorHandler
     Dim AllSegments As SegmentRange
-    Set currentShape = currentShape.Duplicate
-    currentShape.ConvertToCurves
-    Set AllSegments = currentShape.Curve.Nodes.All.SegmentRange
-    Dim k As Integer
+    Dim k, m As Integer
     MeasureShape = 0
+    Set AllSegments = currentShape.Curve.Nodes.All.SegmentRange
     For k = 1 To AllSegments.Count
         MeasureShape = MeasureShape + AllSegments(k).Length
     Next k
-    currentShape.Delete
     Exit Function
     
 ErrorHandler:
     currentShape.Delete
-    Err.Raise 0
+    Err.Raise Number:=vbObjectError + 513, _
+              Description:="Unable to measure shape"
 End Function
 
 Public Sub ResetAfterError()
