@@ -93,7 +93,7 @@ EndJob:
     'Unload PrepareForCutOptions
     Application.Optimization = False
     ActiveWindow.Refresh
-    OrigSelection.Ungroup
+    If Not OrigSelection Is Nothing Then OrigSelection.Ungroup
     ActiveWindow.Refresh
     MACRO_STATUS = 0
     ActiveDocument.EndCommandGroup

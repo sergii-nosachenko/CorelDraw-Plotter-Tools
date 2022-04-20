@@ -113,7 +113,7 @@ Public Sub DoJob()
     
     Optimization = False
     ActiveWindow.Refresh
-    ActiveSelection.Ungroup
+    If Not ActiveSelection Is Nothing Then ActiveSelection.Ungroup
     Unload CreateTableForCut_Options
     ActiveDocument.EndCommandGroup
     

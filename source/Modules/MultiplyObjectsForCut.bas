@@ -97,7 +97,7 @@ Public Sub DoJob()
     
     Optimization = False
     ActiveWindow.Refresh
-    sel.Ungroup
+    If Not sel Is Nothing Then sel.Ungroup
     ActiveDocument.ClearSelection
     Unload ProgressWindow
     Unload MultiplyObjectsForCut_Options
