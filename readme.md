@@ -26,6 +26,24 @@ Main features are:
 1. In file open dialog navigate to `PlotterTools.cdws` file from `dist` folder. Choose open.
 1. Leave all checkboxes enabled. But select to import into `Current workspace` (recommended).
 
+## Possible issues and troubleshooting
+
+Sometimes CorelDraw doesn't allow to store workspace or script in system `Program Files` folder due to insufficient user rights.
+
+If you can't install script/workspace or CorelDraw crashes try to manually move script and workspace to Common app folder:
+
+GMS file to
+```bash
+%AppData%\Corel\{Your CorelDraw version}\Draw\GMS\
+```
+
+CDWS file to
+```bash
+%AppData%\Corel\{Your CorelDraw version}\Draw\Workspace\
+```
+
+Restart your CorelDraw and find PlotterTools workspace in `Windows > Workspace` menus.
+
 ## Plugins list:
 
 - [Correct table for cut](#correct-table-for-cut)
