@@ -123,6 +123,7 @@ Plugin dublicates selected shape(s) with parameters. It fills frame in zigzag st
 - **Vertical offset**: positive number of offset on y-axis in mm. Recommended to set in to: `cut contour height` + `gap between contours`.
 - **Columns**: expected columns count (calculates automatically to fit frame, can be adjusted to both smaller and bigger values).
 - **Rows**: expected rows count (calculates automatically to fit frame, can be adjusted to both smaller and bigger values).
+- **Align to frame center** *(new)*: align generated contours group to frame center, otherwise leave at same position.
 
 Result bounds can be larger than frame, keep it in mind.
 

@@ -91,9 +91,11 @@ Public Sub DoJob()
     
     Set items = ActiveLayer.FindShapes("ITEM")
     Set sel = items.group
-
-    sel.CenterX = (FRAME_SIZE.RightX - FRAME_SIZE.LeftX) / 2
-    sel.CenterY = (FRAME_SIZE.TopY - FRAME_SIZE.BottomY) / 2
+    
+    If MultiplyObjectsForCut_Options.AlignToCenterChk.Value Then
+        sel.CenterX = (FRAME_SIZE.RightX - FRAME_SIZE.LeftX) / 2 + FRAME_SIZE.LeftX
+        sel.CenterY = (FRAME_SIZE.TopY - FRAME_SIZE.BottomY) / 2 + FRAME_SIZE.BottomY
+    End If
     
     Optimization = False
     ActiveWindow.Refresh

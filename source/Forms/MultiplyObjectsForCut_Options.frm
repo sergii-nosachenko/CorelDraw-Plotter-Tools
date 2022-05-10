@@ -1,10 +1,10 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} MultiplyObjectsForCut_Options 
    Caption         =   "Multiply selected contour"
-   ClientHeight    =   5292
+   ClientHeight    =   5895
    ClientLeft      =   120
-   ClientTop       =   468
-   ClientWidth     =   3756
+   ClientTop       =   465
+   ClientWidth     =   3750
    OleObjectBlob   =   "MultiplyObjectsForCut_Options.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
